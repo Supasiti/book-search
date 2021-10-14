@@ -5,7 +5,12 @@ const {
 const services = require('../services');
 
 // get user
-const getUser = async (parent, args, context) => services.users.getOne(args);
+const getUser = async (parent, args, context) => {
+  if (context.user) {
+    services.users.getOne({ id: context.user._id });
+  }
+  throw new AuthenticationError('you must be logged in');
+};
 
 // get all users
 const getAllUsers = async () => services.users.getAll();
@@ -41,7 +46,6 @@ const saveBook = async (parent, args, context) => {
 };
 
 // delete book
-// TODO - add context
 const deleteBook = async (parent, args, context) => {
   if (context.user) {
     const data = { ...args, userId: context.user._id };
