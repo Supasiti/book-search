@@ -13,6 +13,15 @@ const addUser = async (parent, args, context) => {
   return { token, user };
 };
 
+const login = async (parent, args, context) => {
+  const user = await services.users.authenticate(args);
+  if (!user) {
+    throw new UserInputError('User or password is incorrect');
+  }
+  const token = services.auth.signToken(user);
+  return { token, user };
+};
+
 // resolvers
 const resolvers = {
   Query: {
@@ -22,6 +31,7 @@ const resolvers = {
 
   Mutation: {
     addUser,
+    login,
   },
   // Mutation: {
   //   addThought: async (parent, { thoughtText, thoughtAuthor }) => {
