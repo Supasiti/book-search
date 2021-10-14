@@ -42,7 +42,6 @@ const login = async ({ body }, res) => {
 // user comes from `req.user` created in the auth middleware function
 const saveBook = async ({ user, body }, res) => {
   const data = { userId: user._id, ...body };
-  console.log(data);
   try {
     const updatedUser = await services.users.saveBook(data);
     return res.json(updatedUser);
