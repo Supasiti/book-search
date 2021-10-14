@@ -7,7 +7,7 @@ const services = require('../services');
 // get user
 const getUser = async (parent, args, context) => {
   if (context.user) {
-    services.users.getOne({ id: context.user._id });
+    return services.users.getOne({ id: context.user._id });
   }
   throw new AuthenticationError('you must be logged in');
 };
