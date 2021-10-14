@@ -1,3 +1,7 @@
+const {
+  AuthenticationError,
+  UserInputError,
+} = require('apollo-server-express');
 const services = require('../services');
 
 // get user
@@ -27,20 +31,27 @@ const login = async (parent, args, context) => {
 };
 
 // save book to a user
-// TODO - add context
 const saveBook = async (parent, args, context) => {
-  const updatedUser = await services.users.saveBook(args);
-  return updatedUser;
+  if (context.user) {
+    const data = { ...args, userId: context.user._id };
+    const updatedUser = await services.users.saveBook(data);
+    return updatedUser;
+  }
+  throw new AuthenticationError('you must be logged in');
 };
 
 // delete book
 // TODO - add context
 const deleteBook = async (parent, args, context) => {
-  const updatedUser = await services.users.deleteBook(args);
-  if (!updatedUser) {
-    throw new UserInputError(`Couldn't find user with this id!`);
+  if (context.user) {
+    const data = { ...args, userId: context.user._id };
+    const updatedUser = await services.users.deleteBook(data);
+    if (!updatedUser) {
+      throw new UserInputError(`Couldn't find user with this id!`);
+    }
+    return updatedUser;
   }
-  return updatedUser;
+  throw new AuthenticationError('you must be logged in');
 };
 
 // resolvers
