@@ -1,9 +1,11 @@
-const { User } = require('../models'); // import user model
 const services = require('../services');
 const { signToken } = require('../utils/auth'); // import sign token function from auth
 
 const getSingleUser = async (req, res) => {
-  const query = { user: req.user, ...req.params };
+  const query = {
+    id: req.user ? req.user._id : req.params.id,
+    username: req.params.username,
+  };
   const foundUser = await services.users.getOne(query);
 
   if (!foundUser) {
@@ -32,8 +34,7 @@ const login = async ({ body }, res) => {
   if (!user) {
     return res.status(400).json({ message: 'User or password is incorrect' });
   }
-  const { password, ...withoutPassword } = user;
-  const token = signToken(withoutPassword);
+  const token = signToken(user);
   res.json({ token, user });
 };
 

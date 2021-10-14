@@ -1,8 +1,13 @@
 const { User } = require('../models'); // import user model
 
-const getOne = async ({ user = null, id, username }) => {
+const getAll = async () => {
+  const result = await User.find({});
+  return result;
+};
+
+const getOne = async ({ id, email, username }) => {
   const result = await User.findOne({
-    $or: [{ _id: user ? user._id : id }, { username: username }],
+    $or: [{ _id: id }, { email }, { username }],
   });
   return result;
 };
@@ -23,6 +28,8 @@ const authenticate = async ({ username, email, password }) => {
   return isValid ? user.toJSON() : null;
 };
 
+// save a book to a user's `savedBooks` field by adding it to the set
+// (to prevent duplicates)
 const saveBook = async ({ book, user }) => {
   const updatedUser = await User.findOneAndUpdate(
     { _id: user._id },
@@ -32,6 +39,7 @@ const saveBook = async ({ book, user }) => {
   return updatedUser;
 };
 
+// remove a book from `savedBooks`
 const deleteBook = async ({ userId, bookId }) => {
   const updatedUser = User.findOneAndUpdate(
     { _id: userId },
@@ -42,6 +50,7 @@ const deleteBook = async ({ userId, bookId }) => {
 };
 
 module.exports = {
+  getAll,
   getOne,
   create,
   authenticate,
