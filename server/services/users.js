@@ -29,6 +29,16 @@ const saveBook = async ({ book, user }) => {
     { $addToSet: { savedBooks: book } },
     { new: true, runValidators: true },
   );
+  return updatedUser;
+};
+
+const deleteBook = async ({ userId, bookId }) => {
+  const updatedUser = User.findOneAndUpdate(
+    { _id: userId },
+    { $pull: { savedBooks: { bookId: bookId } } },
+    { new: true },
+  );
+  return updatedUser;
 };
 
 module.exports = {
@@ -36,4 +46,5 @@ module.exports = {
   create,
   authenticate,
   saveBook,
+  deleteBook,
 };
