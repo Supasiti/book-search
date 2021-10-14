@@ -1,21 +1,28 @@
 const services = require('../services');
 
-const getUser = async (parent, args, context) => {
-  console.log(args);
-  return services.users.getOne(args);
-  // return Thought.find().sort({ createdAt: -1 });
+const getUser = async (parent, args, context) => services.users.getOne(args);
+
+const getAllUsers = async () => services.users.getAll();
+
+const addUser = async (parent, args, context) => {
+  const user = await services.users.create(args);
+  if (!user) {
+    throw new UserInputError('Invalid argument value');
+  }
+  const token = services.auth.signToken(user);
+  return { token, user };
 };
 
-const getAllUsers = async () => {
-  return services.users.getAll();
-};
-
+// resolvers
 const resolvers = {
   Query: {
     users: getAllUsers,
     user: getUser,
   },
 
+  Mutation: {
+    addUser,
+  },
   // Mutation: {
   //   addThought: async (parent, { thoughtText, thoughtAuthor }) => {
   //     return Thought.create({ thoughtText, thoughtAuthor });
