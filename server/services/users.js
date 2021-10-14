@@ -30,9 +30,10 @@ const authenticate = async ({ username, email, password }) => {
 
 // save a book to a user's `savedBooks` field by adding it to the set
 // (to prevent duplicates)
-const saveBook = async ({ book, user }) => {
+const saveBook = async ({ userId, ...book }) => {
+  console.log(book);
   const updatedUser = await User.findOneAndUpdate(
-    { _id: user._id },
+    { _id: userId },
     { $addToSet: { savedBooks: book } },
     { new: true, runValidators: true },
   );

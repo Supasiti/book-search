@@ -22,6 +22,11 @@ const login = async (parent, args, context) => {
   return { token, user };
 };
 
+const saveBook = async (parent, args, context) => {
+  const updatedUser = await services.users.saveBook(args);
+  return updatedUser;
+};
+
 // resolvers
 const resolvers = {
   Query: {
@@ -32,6 +37,7 @@ const resolvers = {
   Mutation: {
     addUser,
     login,
+    saveBook,
   },
   // Mutation: {
   //   addThought: async (parent, { thoughtText, thoughtAuthor }) => {

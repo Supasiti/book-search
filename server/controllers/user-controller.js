@@ -41,8 +41,10 @@ const login = async ({ body }, res) => {
 // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
 // user comes from `req.user` created in the auth middleware function
 const saveBook = async ({ user, body }, res) => {
+  const data = { userId: user._id, ...body };
+  console.log(data);
   try {
-    const updatedUser = await services.users.saveBook({ user, body });
+    const updatedUser = await services.users.saveBook(data);
     return res.json(updatedUser);
   } catch (err) {
     console.log(err);
