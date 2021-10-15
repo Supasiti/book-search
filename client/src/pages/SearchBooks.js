@@ -7,10 +7,8 @@ import {
   CardColumns,
 } from 'react-bootstrap';
 
-import { useMutation } from '@apollo/client';
 import Auth from '../utils/auth';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
-import { SAVE_BOOK } from '../utils/mutations';
 import SearchBookForm from '../components/SearchBookForm';
 import useSaveBook from '../hooks/useSaveBook';
 
@@ -20,8 +18,7 @@ const SearchBooks = () => {
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-  // const [saveBook] = useMutation(SAVE_BOOK);
-  const handleSaveBook = useSaveBook((book) => {
+  const { handleSaveBook } = useSaveBook((book) => {
     setSavedBookIds([...savedBookIds, book.bookId]);
   });
 
@@ -30,24 +27,6 @@ const SearchBooks = () => {
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
-
-  // create function to handle saving a book to our database
-  // const handleSaveBook = async (bookId) => {
-  //   // find the book in `searchedBooks` state by the matching id
-  //   const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-
-  //   if (!Auth.loggedIn()) {
-  //     return false;
-  //   }
-
-  //   try {
-  //     await saveBook({ variables: { ...bookToSave } });
-  //     // if book successfully saves to user's account, save book id to state
-  //     setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   return (
     <>

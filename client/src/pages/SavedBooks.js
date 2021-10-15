@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
   Jumbotron,
   Container,
@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 
 import { GET_USER } from '../utils/queries';
-import { getSavedBookIds } from '../utils/localStorage';
+import { getSavedBookIds, saveBookIds } from '../utils/localStorage';
 import useDeleteBook from '../hooks/useDeleteBook';
 
 const SavedBooks = () => {
@@ -19,10 +19,16 @@ const SavedBooks = () => {
 
   useEffect(() => {
     const user = data?.user ? data.user : {};
+    const bookIds = user?.savedBooks?.map(({ bookId }) => bookId);
+    if (bookIds) {
+      // save book ids to avoid infinite fetch
+      saveBookIds(bookIds);
+    }
     setUserData(user);
   }, [data]);
 
   // if the number of saved book ids differs the rendered books refetch
+  // need to save
   const refetchIfNeeded = () => {
     const userDataLength = Object.keys(userData).length;
     const savedBooks = getSavedBookIds().length;
