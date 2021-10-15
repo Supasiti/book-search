@@ -8,15 +8,14 @@ import {
   Button,
 } from 'react-bootstrap';
 
-import Auth from '../utils/auth';
 import { GET_USER } from '../utils/queries';
-import { DELETE_BOOK } from '../utils/mutations';
-import { getSavedBookIds, removeBookId } from '../utils/localStorage';
+import { getSavedBookIds } from '../utils/localStorage';
+import useDeleteBook from '../hooks/useDeleteBook';
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
   const { loading, data, refetch } = useQuery(GET_USER);
-  const [deleteBook] = useMutation(DELETE_BOOK);
+  const { handleDeleteBook } = useDeleteBook(setUserData);
 
   useEffect(() => {
     const user = data?.user ? data.user : {};
@@ -24,7 +23,7 @@ const SavedBooks = () => {
   }, [data]);
 
   // if the number of saved book ids differs the rendered books refetch
-  const needUpdate = () => {
+  const refetchIfNeeded = () => {
     const userDataLength = Object.keys(userData).length;
     const savedBooks = getSavedBookIds().length;
     const currentBooks = userDataLength ? userData.savedBooks.length : 0;
@@ -33,23 +32,7 @@ const SavedBooks = () => {
     }
   };
 
-  needUpdate();
-
-  // create function that accepts the book's mongo _id value as param and deletes the book from the database
-  const handleDeleteBook = async (bookId) => {
-    if (!Auth.loggedIn()) {
-      return false;
-    }
-
-    try {
-      const { data } = await deleteBook({ variables: { bookId } });
-      const updatedUser = data.deleteBook;
-      setUserData(updatedUser);
-      removeBookId(bookId);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  refetchIfNeeded();
 
   if (loading) {
     return <h2>LOADING...</h2>;
