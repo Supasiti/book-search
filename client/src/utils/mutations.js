@@ -22,4 +22,5 @@ const LOGIN = gql`
     }
   }
 `;
+
 export { ADD_USER, LOGIN };
