@@ -17,10 +17,7 @@ const SavedBooks = () => {
   // const [userData, setUserData] = useState({});
   const { loading, data } = useQuery(GET_USER);
 
-  console.log(data);
   const userData = data?.user || {};
-
-  // console.log(userData);
 
   // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length;
