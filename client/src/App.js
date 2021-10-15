@@ -1,42 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  createHttpLink,
-  ApolloLink,
-  from,
-} from '@apollo/client';
+import ApolloContainer from './utils/ApolloContainer';
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
 
-const httpLink = createHttpLink({ uri: '/graphql' });
-
-const authMiddleware = new ApolloLink((operation, forward) => {
-  // add the authorization to the headers
-  operation.setContext(({ headers = {} }) => {
-    const token = localStorage.getItem('id_token');
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : '',
-      },
-    };
-  });
-
-  return forward(operation);
-});
-
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: from([authMiddleware, httpLink]),
-});
-
 function App() {
   return (
-    <ApolloProvider client={client}>
+    <ApolloContainer>
       <Router>
         <>
           <Navbar />
@@ -47,7 +18,7 @@ function App() {
           </Switch>
         </>
       </Router>
-    </ApolloProvider>
+    </ApolloContainer>
   );
 }
 
