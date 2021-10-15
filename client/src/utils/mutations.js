@@ -12,6 +12,7 @@ const ADD_USER = gql`
     }
   }
 `;
+
 const LOGIN = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -23,4 +24,29 @@ const LOGIN = gql`
   }
 `;
 
-export { ADD_USER, LOGIN };
+const SAVE_BOOK = gql`
+  mutation saveBook(
+    $authors: [String]
+    $title: String!
+    $description: String!
+    $bookId: String!
+    $image: String
+    $link: String
+  ) {
+    saveBook(
+      authors: $authors
+      title: $title
+      description: $description
+      bookId: $bookId
+      image: $image
+      link: $link
+    ) {
+      username
+      savedBooks {
+        title
+      }
+    }
+  }
+`;
+
+export { ADD_USER, LOGIN, SAVE_BOOK };
